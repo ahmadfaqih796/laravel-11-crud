@@ -16,6 +16,24 @@
                         </a>
                     </div>
 
+                    {{-- Search Form --}}
+                    <div class="mb-6">
+                        <form action="{{ route('products.index') }}" method="GET" class="flex items-center space-x-2">
+                            <input type="text" name="search" placeholder="Search products..."
+                                   value="{{ request('search') }}"
+                                   class="flex-grow border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Search
+                            </button>
+                            @if(request('search'))
+                                <a href="{{ route('products.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Clear
+                                </a>
+                            @endif
+                        </form>
+                    </div>
+                    {{-- End Search Form --}}
+
                     @if (session('success'))
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                             <strong class="font-bold">Success!</strong>
@@ -96,7 +114,7 @@
                                             {{ $product->tgl_pindah ? $product->tgl_pindah->format('d/m/Y') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                            {{ Str::limit($product->keterangan, 50) }} {{-- Potong keterangan jika terlalu panjang --}}
+                                            {{ Str::limit($product->keterangan, 50) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <a href="{{ route('products.edit', $product->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600 mr-3">Edit</a>
@@ -119,7 +137,8 @@
                     </div>
 
                     <div class="mt-4">
-                        {{ $products->links() }} {{-- Untuk paginasi --}}
+                        {{-- Penting: sertakan query parameter search saat paginasi --}}
+                        {{ $products->appends(request()->query())->links() }}
                     </div>
                 </div>
             </div>
